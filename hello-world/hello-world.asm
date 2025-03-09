@@ -1,11 +1,12 @@
 BITS 32
-ORG 0x08048000  ; Standard Linux ELF load address
+ORG 0x08048000                 ; Standard Linux ELF load address
 
-ehdr:                          ; ELF Header (compressed)
-    db 0x7F, "ELF", 1, 1, 1, 0  ; Magic Number + 32-bit little-endian
+; ELF Header (52 bytes)
+ehdr:
+    db 0x7F, "ELF", 1, 1, 1, 0 ; Magic Number + 32-bit little-endian
     times 8 db 0               ; Padding
-    dw 2                       ; Type: ET_EXEC (executable)
-    dw 3                       ; Machine: x86 (i386)
+    dw 2                       ; Type: ET_EXEC
+    dw 3                       ; Machine: x86
     dd 1                       ; Version
     dd _start                  ; Entry Point
     dd phdr - $$               ; Program Header Offset
@@ -14,35 +15,30 @@ ehdr:                          ; ELF Header (compressed)
     dw 1                       ; Number of Program Headers
     dw 0, 0, 0                 ; No section headers
 
+; Program Header (32 bytes)
 phdr:                          ; Program Header
-    dd 1                       ; Type: PT_LOAD (loadable segment)
+    dd 1                       ; Type: PT_LOAD
     dd 0                       ; Offset
     dd $$                      ; Virtual Address
     dd $$                      ; Physical Address
     dd filesize                ; File size
     dd filesize                ; Memory size
-    dd 5                       ; Flags: R + X (Read & Execute)
-    dd 0x1000                  ; Alignment (page size)
+    dd 5                       ; Flags: R + X
+    dd 0x1000                  ; Alignment
 
+; Code Section
 _start:
-    ; sys_write(fd=1, buf=msg, count=len)
-    push 4                     ; syscall: sys_write
-    pop eax
-    push 1                     ; stdout
-    pop ebx
-    lea ecx, [msg]             ; Pointer to message (fixed location)
-    push msglen                ; Message length
-    pop edx
-    int 0x80                   ; Invoke syscall
+    mov al, 4                  ; sys_write
+    inc ebx                    ; stdout=1
+    mov ecx, msg               ; Pointer to message
+    mov dl, msglen             ; Message length
+    int 0x80                   
 
-    ; sys_exit(status=0)
-    push 1                     ; syscall: sys_exit
-    pop eax
+    xor eax, eax               
+    inc eax                    ; sys_exit=1
     xor ebx, ebx               ; exit code 0
-    int 0x80                   ; Invoke syscall
+    int 0x80                   
 
-msg:                           ; Message stored **after** code
-    db "Hello, world!", 10      ; Correct message placement
-msglen equ $ - msg              ; Compute message length
-
-filesize equ $ - $$             ; Compute total file size
+msg:    db "Hello, world!", 10
+msglen equ $ - msg
+filesize equ $ - $$

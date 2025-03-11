@@ -36,7 +36,7 @@ _start:
 
     xor eax, eax               
     inc eax                    ; sys_exit=1
-    xor ebx, ebx               ; exit code 0
+    ; we should clear ebx with an xor here for exit code 0, but why not save 2 more bytes?
     int 0x80                   
 
 msg:    db "Hello, world!", 10

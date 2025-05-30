@@ -29,7 +29,7 @@ phdr:                          ; Program Header
 ; Code Section
 _start:
     mov al, 4                  ; sys_write
-    ; we should clear ebx with an xor here, but ebx is probably already 0
+    ; we *should* clear ebx with an xor here, but ebx is probably already 0
     inc ebx                    ; stdout=1
     mov ecx, msg               ; Pointer to message
     mov dl, msglen             ; Message length
@@ -37,7 +37,7 @@ _start:
 
     xor eax, eax               ; Clear eax
     inc eax                    ; sys_exit=1
-    ; we should clear ebx with an xor here for exit code 0, but why not save 2 more bytes?
+    ; we *should* clear ebx with an xor here for exit code 0, but why not save 2 more bytes?
     int 0x80                   ; syscall
 
 msg:    db "Hello, world!", 10

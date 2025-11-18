@@ -10,12 +10,13 @@ reference: hello-world.c
 	gcc -s -Os $< -o $@
 
 test: hello-world reference
+	@echo "Comparing outputs of ASM vs. reference"
 	@ASM_OUT="$$(./hello-world)"; \
 	 REF_OUT="$$(./reference)"; \
 	 if [ "$$ASM_OUT" = "$$REF_OUT" ]; then \
-	   echo "Test passed: output matched reference"; \
+	   echo "Test passed: outputs match"; \
 	 else \
-	   echo "Test failed: output differed from reference"; \
+	   echo "Test failed: outputs differ"; \
 	   echo "  ASM:       $$ASM_OUT"; \
 	   echo "  Reference: $$REF_OUT"; \
 	   exit 1; \

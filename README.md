@@ -52,6 +52,7 @@ Each tiny binary must meet these constraints:
 |---------|--------|-------|
 | hello-world | ✅ | 115 |
 | true | ✅ | 87 |
+| yes | ✅ | 102 |
 | factorial | ⏳ | - |
 | fibonacci | ⏳ | - |
 | echo | ⏳ | - |

@@ -48,13 +48,15 @@ Each tiny binary must meet these constraints:
 
 ## Status
 
-- [x] hello-world (115 bytes)
-- [ ] factorial
-- [ ] fibonacci
-- [ ] echo
-- [ ] date
-- [ ] simple HTTP "Hello" server
-- [ ] GNU Coreutils
+| Program | Status | Bytes |
+|---------|--------|-------|
+| hello-world | ✅ | 115 |
+| factorial | ⏳ | - |
+| fibonacci | ⏳ | - |
+| echo | ⏳ | - |
+| date | ⏳ | - |
+| simple HTTP "Hello" server | ⏳ | - |
+| GNU Coreutils | ⏳ | - |
 
 ## Build & Test
 

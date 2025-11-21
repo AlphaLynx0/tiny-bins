@@ -1,17 +1,19 @@
-.PHONY: all clean test savings
+PROGRAM := hello-world
 
-all: hello-world reference
+.PHONY: all clean test savings listing
 
-hello-world: hello-world.asm
-	nasm -f bin $< -o $@
+all: $(PROGRAM) reference
+
+$(PROGRAM): $(PROGRAM).asm
+	nasm -f bin $< -o $@ -l $(PROGRAM).lst
 	chmod +x $@
 
-reference: hello-world.c
+reference: $(PROGRAM).c
 	gcc -s -Os $< -o $@
 
-test: hello-world reference
+test: $(PROGRAM) reference
 	@echo "Comparing outputs of ASM vs. reference"
-	@ASM_OUT="$$(./hello-world)"; \
+	@ASM_OUT="$$(./$(PROGRAM))"; \
 	 REF_OUT="$$(./reference)"; \
 	 if [ "$$ASM_OUT" = "$$REF_OUT" ]; then \
 	   echo "Test passed: outputs match"; \
@@ -22,16 +24,18 @@ test: hello-world reference
 	   exit 1; \
 	 fi
 
-savings: hello-world reference
+savings: $(PROGRAM) reference
 	@echo "Calculating space savings (Assembly vs. C reference)"
-	@ASM_SIZE=$$(stat -c%s hello-world); \
+	@ASM_SIZE=$$(stat -c%s $(PROGRAM)); \
 	 REF_SIZE=$$(stat -c%s reference); \
 	 DIFF=$$(($$REF_SIZE - $$ASM_SIZE)); \
 	 PCT=$$(awk -v d=$$DIFF -v r=$$REF_SIZE 'BEGIN{printf "%.2f", d/r*100}'); \
 	 echo "  asm:            $$ASM_SIZE bytes"; \
 	 echo "  C reference:	  $$REF_SIZE bytes"; \
 	 echo "  savings:        $$DIFF bytes ( $${PCT}% )"; \
-	 rm -f reference.upx
+
+listing: $(PROGRAM).lst
+	@cat $(PROGRAM).lst
 
 clean:
-	rm -f hello-world reference
+	rm -f $(PROGRAM) reference $(PROGRAM).lst
